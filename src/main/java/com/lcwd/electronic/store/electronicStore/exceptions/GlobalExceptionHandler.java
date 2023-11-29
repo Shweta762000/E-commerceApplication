@@ -18,7 +18,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     //handler resource not found exception
-    private Logger logger= LoggerFactory.getLogger(GlobalExceptionHandler.class);
+   final private Logger logger= LoggerFactory.getLogger(GlobalExceptionHandler.class);
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponce> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
         logger.info("Global Exception Handler Involved sucessfully!!");
@@ -36,6 +36,12 @@ public class GlobalExceptionHandler {
             responce.put(feild,msg);
         });
     return new ResponseEntity(responce,HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(BadApiRequest.class)
+    public ResponseEntity<ApiResponce> badApiReq(BadApiRequest ex){
+        logger.info("Global Exception Handler Involved sucessfully!!");
+        ApiResponce responce = ApiResponce.builder().message(ex.getMessage()).status(HttpStatus.BAD_REQUEST).sucess(false).build();
+        return new ResponseEntity(responce,HttpStatus.BAD_REQUEST);
     }
 
 }

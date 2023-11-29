@@ -2,18 +2,23 @@ package com.lcwd.electronic.store.electronicStore.controller;
 
 import com.lcwd.electronic.store.electronicStore.AppConstanstant.UrlConstants;
 import com.lcwd.electronic.store.electronicStore.dtos.ApiResponce;
+import com.lcwd.electronic.store.electronicStore.dtos.ImageResponse;
 import com.lcwd.electronic.store.electronicStore.dtos.PageableResponse;
 import com.lcwd.electronic.store.electronicStore.dtos.UserDto;
 import com.lcwd.electronic.store.electronicStore.entities.User;
+import com.lcwd.electronic.store.electronicStore.services.FileService;
 import com.lcwd.electronic.store.electronicStore.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 import static com.lcwd.electronic.store.electronicStore.AppConstanstant.Constantants.*;
@@ -26,6 +31,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private FileService fileService;
+    @Value("${user.profile.image.path}")
+    private String path;
+
 
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
@@ -82,5 +93,15 @@ public class UserController {
     public ResponseEntity<List<UserDto>> searchUser(@PathVariable String keyword) {
         logger.info("Request received to search users with keyword: {}", keyword);
         return new ResponseEntity<>(userService.searchUser(keyword), HttpStatus.OK);
+    }
+    @GetMapping("/image/{userId}")
+    public ResponseEntity<ImageResponse> uploadImg(@RequestParam ("image")MultipartFile img, @PathVariable String userId) throws IOException {
+
+        String s = fileService.uploadFile(img, path, userId);
+        UserDto userById = userService.getUserById(userId);
+        userById.setImageName(s);
+        userService.updateUser(userById, userId);
+        ImageResponse imageResponse = ImageResponse.builder().img(s).massage("sucess").httpStatus(HttpStatus.CREATED).status(true).build();
+        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
     }
 }
