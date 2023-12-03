@@ -5,7 +5,7 @@ import com.lcwd.electronic.store.electronicStore.dtos.ApiResponce;
 import com.lcwd.electronic.store.electronicStore.dtos.ImageResponse;
 import com.lcwd.electronic.store.electronicStore.dtos.PageableResponse;
 import com.lcwd.electronic.store.electronicStore.dtos.UserDto;
-import com.lcwd.electronic.store.electronicStore.entities.User;
+
 import com.lcwd.electronic.store.electronicStore.services.FileService;
 import com.lcwd.electronic.store.electronicStore.services.UserService;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
+
 import java.util.List;
 
 import static com.lcwd.electronic.store.electronicStore.AppConstanstant.Constantants.*;

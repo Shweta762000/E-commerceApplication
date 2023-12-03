@@ -2,7 +2,6 @@ package com.lcwd.electronic.store.electronicStore.services;
 
 import com.lcwd.electronic.store.electronicStore.dtos.PageableResponse;
 import com.lcwd.electronic.store.electronicStore.dtos.UserDto;
-import com.lcwd.electronic.store.electronicStore.entities.User;
 
 import java.util.List;
 
