@@ -11,12 +11,18 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,6 +34,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+   @Value("${user.profile.image.path}")
+    private String path;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -63,7 +71,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        String imageName = user.getImageName();
+       String fullPath= path+imageName;
+       try{
+           Path path1= Paths.get(fullPath);
+           Files.delete(path1);
+       } catch (NoSuchFileException ex){
+           ex.printStackTrace();
 
+       } catch (IOException ex){
+        ex.printStackTrace();
+       }
         userRepository.delete(user);
         logger.info("User deleted successfully with ID: {}", userId);
     }
@@ -79,10 +97,6 @@ public class UserServiceImpl implements UserService {
         return pageableResponse;
     }
 
-    @Override
-    public UserDto getUser(String userId) {
-        return null;
-    }
 
     @Override
     public UserDto getUserById(String userId) {

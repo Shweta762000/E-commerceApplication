@@ -13,12 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import static com.lcwd.electronic.store.electronicStore.AppConstanstant.Constantants.*;
@@ -94,14 +99,45 @@ public class UserController {
         logger.info("Request received to search users with keyword: {}", keyword);
         return new ResponseEntity<>(userService.searchUser(keyword), HttpStatus.OK);
     }
-    @GetMapping("/image/{userId}")
+
+    /**
+     * @author {shweta swami}
+     * need to improve
+     * @param img
+     * @param userId
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/image/{userId}")
     public ResponseEntity<ImageResponse> uploadImg(@RequestParam ("image")MultipartFile img, @PathVariable String userId) throws IOException {
 
-        String s = fileService.uploadFile(img, path, userId);
-        UserDto userById = userService.getUserById(userId);
-        userById.setImageName(s);
-        userService.updateUser(userById, userId);
-        ImageResponse imageResponse = ImageResponse.builder().img(s).massage("sucess").httpStatus(HttpStatus.CREATED).status(true).build();
-        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
+//        String s = fileService.uploadFile(img, path, userId);
+//        UserDto userById = userService.getUserById(userId);
+//        userById.setImageName(s);
+//        userService.updateUser(userById, userId);
+//        ImageResponse imageResponse = ImageResponse.builder().img(s).massage("sucess").httpStatus(HttpStatus.CREATED).status(true).build();
+//        return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
+//
+        try {
+            String s = fileService.uploadFile(img, path, userId);
+            UserDto userById = userService.getUserById(userId);
+            userById.setImageName(s);
+            userService.updateUser(userById, userId);
+            ImageResponse imageResponse = ImageResponse.builder().img(s).massage("sucess").httpStatus(HttpStatus.CREATED).status(true).build();
+            return new ResponseEntity<>(imageResponse,HttpStatus.CREATED);
+        } catch (IOException e) {
+            logger.error("Error uploading image for user {}", userId, e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/image/{userId}")
+    public void serveImage(@PathVariable String userId, HttpServletResponse response) throws IOException {
+        logger.info("Request received for get the Image of user by userId: {} " +userId);
+        UserDto user = userService.getUserById(userId);
+        logger.info("User image name: {} ",user.getImageName());
+        InputStream resource = fileService.getResource(path, user.getImageName());
+        response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+        logger.info("Completed request for get the Image of user by userId: {} " +userId);
+        StreamUtils.copy(resource,response.getOutputStream());
     }
 }
