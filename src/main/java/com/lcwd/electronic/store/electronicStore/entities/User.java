@@ -1,12 +1,10 @@
 package com.lcwd.electronic.store.electronicStore.entities;
 
 import lombok.*;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,7 +32,7 @@ public class User {
     private String about;
     @Column(name = "user_image_name")
     private String imageName;
-    @OneToMany(mappedBy = user ,fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy ="user" ,fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     private List<Order> orders= new ArrayList<>();
 
 

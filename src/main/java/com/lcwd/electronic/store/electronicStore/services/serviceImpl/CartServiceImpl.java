@@ -109,7 +109,7 @@ public class CartServiceImpl implements CartService {
 
     }
 
-    @Override   x n
+    @Override
     public void clearCart(String userId) {
         //fetch the user from db
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found in database!!"));
