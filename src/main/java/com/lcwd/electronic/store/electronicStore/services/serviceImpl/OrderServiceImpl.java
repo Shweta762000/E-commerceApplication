@@ -121,7 +121,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageableResponse<OrderDto> getOrders(int pageNumber, int pageSize, String sortBy, String sortDir) {
-        Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
+         Sort sort = (sortDir.equalsIgnoreCase("desc")) ? (Sort.by(sortBy).descending()) : (Sort.by(sortBy).ascending());
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Order> page = orderRepository.findAll(pageable);
         return Helper.getPageableResponse(page, OrderDto.class);
@@ -130,16 +130,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto updateOrder(String orderId, OrderUpdateRequest request) {
 
-//
-//        Order order = orderRepository.findById(orderId).orElseThrow(() -> new BadApiRequestException("Invalid update data"));
-//        order.setBillingName(request.getBillingName());
-//        order.setBillingPhone(request.getBillingPhone());
-//        order.setBillingAddress(request.getBillingAddress());
-//        order.setPaymentStatus(request.getPaymentStatus());
-//        order.setOrderStatus(request.getOrderStatus());
-//        order.setDeliveredDate(request.getDeliveredDate());
-//        Order updatedOrder = orderRepository.save(order);
-//        return modelMapper.map(updatedOrder, OrderDto.class);
-    return null;
+
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new BadApiRequest("Invalid update data"));
+        order.setBillingName(request.getBillingName());
+        order.setBillingPhone(request.getBillingPhone());
+        order.setBillingAddress(request.getBillingAddress());
+        order.setPaymentStatus(request.getPaymentStatus());
+        order.setOrderStatus(request.getOrderStatus());
+        order.setDeliveredDate(request.getDeliveredDate());
+        Order updatedOrder = orderRepository.save(order);
+        return modelMapper.map(updatedOrder, OrderDto.class);
+
     }
 }
