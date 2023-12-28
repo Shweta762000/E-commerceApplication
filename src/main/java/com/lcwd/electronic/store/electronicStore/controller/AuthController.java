@@ -7,6 +7,8 @@ import com.lcwd.electronic.store.electronicStore.exceptions.BadApiRequest;
 import com.lcwd.electronic.store.electronicStore.security.JwtHelper;
 import com.lcwd.electronic.store.electronicStore.services.UserService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,8 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/auth")
+
 public class AuthController {
-
-
     @Autowired
     private UserDetailsService userDetailsService;
     @Autowired
@@ -35,6 +36,9 @@ public class AuthController {
 
     @Autowired
     private JwtHelper helper;
+
+    private Logger logger = LoggerFactory.getLogger(AuthController.class);
+
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
@@ -59,9 +63,11 @@ public class AuthController {
 
     }
 
+
     @GetMapping("/current")
     public ResponseEntity<UserDto> getCurrentUser(Principal principal) {
         String name = principal.getName();
-        return new ResponseEntity<>(modelMapper.map(userDetailsService.loadUserByUsername(name),UserDto.class), HttpStatus.OK);
+        return new ResponseEntity<>(modelMapper.map(userDetailsService.loadUserByUsername(name), UserDto.class), HttpStatus.OK);
     }
-    }
+
+}

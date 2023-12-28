@@ -1,24 +1,19 @@
 package com.lcwd.electronic.store.electronicStore.security;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
-import org.springframework.stereotype.Component;
-
 @Component
 public class JwtHelper {
-
-    //requirement :
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
 //    public static final long JWT_TOKEN_VALIDITY =  60;
